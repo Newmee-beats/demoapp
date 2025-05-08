@@ -1,0 +1,51 @@
+﻿@page "/"
+@using MyAPP.Models;
+@using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer
+
+<PageTitle>Persons</PageTitle>
+
+<h3>Add A NEW PERSON!!</h3>
+
+<EditForm Model="@newPerson" OnSubmit="SubmitForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <label>Name</label>
+    <InputText @bind-Value="newPerson.Name"/>
+    <ValidationMessage For="@(() => newPerson.Name)" />
+
+    <br/>
+
+    <label>Phone Number</label>
+    <InputText @bind-Value="newPerson.PhoneNumber"/>
+    <ValidationMessage For="@(() => newPerson.PhoneNumber)" />
+
+    <br/>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <p style="color: green;">@successMessage</p>
+}
+
+@inject Data.AppDbContext dbContext
+
+@code {
+    private Person newPerson = new Person();
+
+    private string successMessage = string.Empty;
+
+    private async Task SubmitForm()
+    {
+        //Console.WriteLine($"Saving: {newPerson.Name}, {newPerson.PhoneNumber}");
+        dbContext.Persons.Add(newPerson);
+        await dbContext.SaveChangesAsync();
+
+        successMessage = "Person successfully added!";
+
+        newPerson = new Person();
+    }
+}

@@ -1,0 +1,43 @@
+@page "/view-persons"
+@using Microsoft.EntityFrameworkCore
+@using MyAPP.Models
+@inject Data.AppDbContext dbContext
+
+<h3>All Persons In The DataBase!!</h3>
+
+@if(persons == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if(persons.Count == 0)
+{
+    <p>No Data Available.</p>
+}
+else{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in persons)
+            {
+                <tr>
+                    <td>@person.Name</td>
+                    <td>@person.PhoneNumber</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code{
+    private List<Person> persons ;
+
+    protected override async Task OnInitializedAsync()
+    {
+        persons = await dbContext.Persons.ToListAsync();
+    }
+}
